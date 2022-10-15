@@ -1,0 +1,8 @@
+prefix=/home/alyssa/下载/华南虎视觉感知任务/任务二/devel
+
+Name: usb_cam
+Description: Description of usb_cam
+Version: 0.3.6
+Cflags: -I/home/alyssa/下载/华南虎视觉感知任务/任务二/src/usb_cam/include
+Libs: -L${prefix}/lib -lusb_cam
+Requires: 

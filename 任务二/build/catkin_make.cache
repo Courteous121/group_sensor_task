@@ -1,0 +1,2 @@
+usb_cam
+-DCATKIN_DEVEL_PREFIX=/home/alyssa/下载/华南虎视觉感知任务/任务二/devel -DCMAKE_INSTALL_PREFIX=/home/alyssa/下载/华南虎视觉感知任务/任务二/install -G Unix Makefiles
