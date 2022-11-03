@@ -1,0 +1,13 @@
+<launch>
+
+  <node name="image_pub" pkg="camera" type="image_pub" output="screen" >
+
+  <param name="x_width" type="double" value="480" />
+  <param name="y_height" type="double" value="480" />
+
+  </node>
+
+   <node name="image_sub" pkg="camera" type="image_sub" respawn="false" output="screen">
+   
+  </node>
+</launch>

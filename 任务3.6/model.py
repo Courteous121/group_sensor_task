@@ -5,11 +5,11 @@ import torch.nn.functional as F
 class FCNet(nn.Module):  # 全连接网络    `
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(19200, 512)
+        self.fc1 = nn.Linear(19200, 512) # 80 * 80 * 3的图片输入
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, 128)
         self.fc4 = nn.Linear(128, 64)
-        self.fc5 = nn.Linear(64, 6)
+        self.fc5 = nn.Linear(64, 6)  # 输出六个索引值
         self.dropout = nn.Dropout(p=0.2)
 
     def forward(self, x):

@@ -34,9 +34,7 @@ using namespace std;
 using namespace cv;
 using namespace Ort;
 
-/**
- * @brief the deployment library of the ONNXruntime (Ort)
- */
+
 class OnnxRT
 {
     using session_ptr = std::shared_ptr<Ort::Session>;
@@ -58,19 +56,7 @@ class OnnxRT
     std::vector<const char *> __output_names;
 
 public:
-    /**
-     * @brief Construct the OnnxRT object
-     *
-     * @param model_path model path, if the path doesn't exist, the program will exit due to the error.
-     * @param means array of the means value which of the (R G B) channels after the normalization of the pre-set image.
-     * @param std array of the standard deviation which of the (R G B) channels after the normalization of the pre-set
-     *            image.
-     * @param label_paths all the label path, if one of the paths doesn't exist, the program will abort.
-     *                    if the size of the label_paths doen't equal to the size of the model output
-     *                    layers or the size of the last tensor in each model output layer doen't equal
-     *                    to the size of each vector of the labels, the index will be used instead of
-     *                    the value(label) when printing.
-     */
+
     OnnxRT(const std::string & ,cv::Matx31f ,cv::Matx31f  );
     
     ~OnnxRT() = default;
@@ -84,12 +70,6 @@ private:
     std::vector<Ort::Value> pre_process(const std::vector<cv::Mat> &);
     std::vector<size_t> post_process(std::vector<Ort::Value> &);
 
-    /**
-     * @brief inference and return the output tensors
-     *
-     * @param input_tensors input tensors
-     * @return output tensors
-     */
     inline std::vector<Ort::Value> doInference(std::vector<Ort::Value> &input_tensors)
     {
         return __pSession->Run(Ort::RunOptions{nullptr}, __input_names.data(), input_tensors.data(),
@@ -110,17 +90,12 @@ OnnxRT::OnnxRT(const string &model_path,cv::Matx31f means,cv::Matx31f std)
     {
         __means[i] = means(i);
         __std[i] = std(i);
-                cout<<__means[i]<<"  "<<__std[i]<<endl;
-
+         //       cout<<__means[i]<<"  "<<__std[i]<<endl;
     }
 }
 
 
-/**
- * @brief initialize the engine of the Ort
- *
- * @param model_path
- */
+
 void OnnxRT::setupEngine(const string &model_path)
 {
 
@@ -144,12 +119,7 @@ void OnnxRT::setupEngine(const string &model_path)
     }
 }
 
-/**
- * @brief pre-process, inference and post-process
- *
- * @param images all of the input images
- * @return the vector of the index corresponding to the value with the highest probabilty
- */
+
 vector<size_t> OnnxRT::inference(const vector<Mat> &images)
 {
     vector<Value> input_tensors = pre_process(images);//由输入的图片得到输入张量
@@ -157,12 +127,7 @@ vector<size_t> OnnxRT::inference(const vector<Mat> &images)
     return post_process(output_tensors);//获得输出的索引
 }
 
-/**
- * @brief pre-process
- *
- * @param images all of the input images
- * @return input tensors
- */
+
 vector<Value> OnnxRT::pre_process(const vector<Mat> &images)
 {
     size_t input_count = __pSession->GetInputCount();
@@ -188,12 +153,7 @@ vector<Value> OnnxRT::pre_process(const vector<Mat> &images)
     return input_tensors;
 }
 
-/**
- * @brief post-process
- *
- * @param output_tensors output tensors
- * @return index or value with the highest confidence
- */
+
 vector<size_t> OnnxRT::post_process(vector<Value> &output_tensors)
 {
     // the index with the highest confidence corresponding to all outputs
@@ -214,13 +174,7 @@ vector<size_t> OnnxRT::post_process(vector<Value> &output_tensors)
     return output_indexs;
 }
 
-/**
- * @brief Allocate memory, flatten the image to a one-dimensional array in 'NCHW' format,
- *        at the same time, the array will be normalized.
- *
- * @param input_image the input image (input)
- * @param input_array input array from the input image (output)
- */
+
 void OnnxRT::imageToVector(Mat &input_image, vector<float> &input_array)
 {
     // CHW
@@ -245,64 +199,20 @@ void OnnxRT::imageToVector(Mat &input_image, vector<float> &input_array)
     }
 }
 
-void OnnxRT::printModelInfo()
-{
-    cout << "-------------- Input Layer --------------" << endl;
-    int input_node = __pSession->GetInputCount();
-    cout << "the number of input node is: " << input_node << endl;
-    for (int i = 0; i < input_node; i++)
-    {
-        cout << "[" << i << "]\t┬ name is: " << __pSession->GetInputName(i, __allocator) << endl;
-        vector<int64_t> input_dims = __pSession->GetInputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
-        cout << "\t│ dim is: [";
-        for (auto dim : input_dims)
-        {
-            cout << dim << ", ";
-        }
-        cout << "\b\b]\n";
-        cout << "\t└ type of each element is: "
-             << __pSession->GetInputTypeInfo(i).GetTensorTypeAndShapeInfo().GetElementType() << endl;
-    }
-
-    cout << "\n------------- Output  Layer -------------" << endl;
-    int output_node = __pSession->GetOutputCount();
-    cout << "the number of output node is: " << __pSession->GetOutputCount() << endl;
-    for (int i = 0; i < output_node; i++)
-    {
-        cout << "[" << i << "]\t┬ name is: " << __pSession->GetOutputName(i, __allocator) << endl;
-        vector<int64_t> output_dims = __pSession->GetOutputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
-        cout << "\t│ dim is: [";
-        for (auto dim : output_dims)
-        {
-            cout << dim << ", ";
-        }
-        cout << "\b\b]\n";
-        cout << "\t└ type of each element is: "
-             << __pSession->GetOutputTypeInfo(i).GetTensorTypeAndShapeInfo().GetElementType() << endl;
-    }
-                 cout<<input_node<<"  "<<output_node<<endl;
-
-}
-
 
 
 int main()
 {
-    Mat img=imread("1.jpg");
+    Mat img=imread("2.jpg");
     vector<Mat> img0;
     Mat Mean,stddev;
-    meanStdDev(img,Mean,stddev);
-    
+   
         
-     OnnxRT ort0("FCNet.onnx",Mean,stddev);
+     OnnxRT ort0("FCNet.onnx",{0,0,0},{1,1,1});
      
     img0.push_back(img);
  
      vector<size_t> output_index=ort0.inference(img0);
-    // cout<<"output_index="<<endl;
-    // for(int i=0;i<output_index.size();i++)
-     cout<<"最高的索引："<<output_index[0]<<endl;
-     //ort0.printModelInfo();
-  
-
+         cout<<"检测类型为："<<output_index[0]<<endl;
+    
 }

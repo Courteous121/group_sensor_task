@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/alyssa/下载/华南虎视觉感知任务/任务3.6/arrange/build",
-  "command": "/usr/bin/g++   -I/usr/local/include/onnxruntime -I/usr/local/include/onnxruntime/core -I/usr/local/include/onnxruntime/core/session -isystem /usr/local/include/opencv4  -g   -o CMakeFiles/Test.dir/main.cpp.o -c /home/alyssa/下载/华南虎视觉感知任务/任务3.6/arrange/main.cpp",
-  "file": "/home/alyssa/下载/华南虎视觉感知任务/任务3.6/arrange/main.cpp"
-}
-]

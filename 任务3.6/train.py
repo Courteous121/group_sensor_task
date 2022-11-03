@@ -13,6 +13,7 @@ def main():
     path1 = os.path.join(os.getcwd(), '装甲板数字数据集', 'train')
     path2 = os.path.join(os.getcwd(), '装甲板数字数据集', 'val')
 
+    # 将图片转换成80*80*3的张量
     transform1 = transforms.Compose(
         [
             transforms.ToTensor()
@@ -34,7 +35,7 @@ def main():
 
     # 6. 传入网络进行训练
     net = FCNet()  # 实例化网络
-    lossFunc = nn.CrossEntropyLoss()  # 定义损失函数
+    lossFunc = nn.CrossEntropyLoss()  # 定义损失函数，交叉熵损失函数，先进行sigmoid函数，再将结果放在传统的交叉熵函数中进行计算
     optimizer = optim.Adam(net.parameters(), lr=0.0001)  # 定义优化器，设置学习率
     epochs = 5  # 训练轮数
 
@@ -62,7 +63,7 @@ def main():
         for images, labels in val_loader:
             y_hat = net(images)
             test_runningloss += lossFunc(y_hat, labels)
-            ps = torch.exp(y_hat)  # e的y_hat次方
+            ps = torch.exp(y_hat)  # ps也是一个六维的数组
             top_p, top_class = ps.topk(1, dim=1)  # top_p是最值，top_class是索引
             equals = (top_class == labels.view(*top_class.shape))  # equals是1或者0
             test_acc += torch.mean(equals.type(torch.FloatTensor))  # 对torch.tensor取均值；torch.floattensor是对list,numpy进行类型转换
@@ -80,6 +81,8 @@ def main():
     save_path = './FCNet.pth'
     torch.save(net, save_path)
 
+    save_path0 = './FCNet0.pth'
+    torch.save(net.state_dict(), save_path0)
 
 if __name__ == '__main__':
     main()
